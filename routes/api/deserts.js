@@ -1,18 +1,18 @@
 const express = require("express");
 const ctrl = require("../../controllers/deserts");
 
-const validateBody = require("../../middlewares");
-const schemas = require("../../schemas/deserts");
+const { validateBody, isValidId } = require("../../middlewares");
+const { schemas } = require("../../models/desert");
 
 const router = express.Router();
 
 router.get("/", ctrl.getAll);
-router.get("/:id", ctrl.getById);
+router.get("/:id", isValidId, ctrl.getById);
 
 router.post("/", validateBody(schemas.addSchema), ctrl.addDesert);
 
-router.put("/:id", validateBody(schemas.addSchema), ctrl.updateById);
+router.put("/:id", isValidId, validateBody(schemas.addSchema), ctrl.updateById);
 
-router.delete("/:id", ctrl.deleteDesert);
+router.delete("/:id", isValidId, ctrl.deleteDesert);
 
 module.exports = router;

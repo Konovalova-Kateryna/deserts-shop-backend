@@ -1,10 +1,11 @@
-const deserts = require("../models/deserts");
+const { Desert } = require("../models/desert");
 
 const { HttpError } = require("../utils");
 
 const getAll = async (req, res, next) => {
   try {
-    const result = await deserts.getAll();
+    const result = await Desert.find({}, "-createdAt -updatedAt");
+    // const result = await Desert.find();
     res.json(result);
   } catch (error) {
     next(error);
@@ -14,7 +15,9 @@ const getAll = async (req, res, next) => {
 const getById = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const result = await deserts.getById(id);
+    // const result = await Desert.findOne({ _id: id });
+
+    const result = await Desert.findById(id);
     if (!result) {
       throw HttpError(404, "Not found");
     }
@@ -26,7 +29,7 @@ const getById = async (req, res, next) => {
 
 const addDesert = async (req, res, next) => {
   try {
-    const result = await deserts.add(req.body);
+    const result = await Desert.create(req.body);
     res.status(201).json(result);
   } catch (error) {
     next(error);
@@ -36,7 +39,7 @@ const addDesert = async (req, res, next) => {
 const updateById = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const result = await deserts.updateById(id, req.body);
+    const result = await Desert.findByIdAndUpdate(id, req.body, { new: true });
     if (!result) {
       throw HttpError(404, "Not found");
     }
@@ -49,7 +52,7 @@ const updateById = async (req, res, next) => {
 const deleteDesert = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const result = await deserts.deleteById(id);
+    const result = await Desert.findByIdAndDelete(id);
     if (!result) {
       throw HttpError(404, "Not found");
     }

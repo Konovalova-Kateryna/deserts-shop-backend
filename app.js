@@ -1,8 +1,7 @@
-const deserts = require("./models/deserts");
-
 const express = require("express");
 const logger = require("morgan");
 const cors = require("cors");
+require("dotenv").config();
 
 const desertsRouter = require("./routes/api/deserts");
 
