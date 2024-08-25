@@ -4,7 +4,12 @@ const { HttpError } = require("../utils");
 
 const getAll = async (req, res, next) => {
   try {
-    const result = await Desert.find({}, "-createdAt -updatedAt");
+    const { page = 1, limit = 10 } = req.query;
+    const skip = (page - 1) * limit;
+    const result = await Desert.find({}, "-createdAt -updatedAt", {
+      skip,
+      limit,
+    });
     // const result = await Desert.find();
     res.json(result);
   } catch (error) {
