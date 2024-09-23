@@ -7,9 +7,18 @@ const categoryList = ["macaroons", "donates", "cupcakes"];
 
 const desertSchema = new Schema(
   {
-    titleEng: { type: String, required: true },
-    titleUa: { type: String, required: true },
-    price: { type: Number, required: true },
+    titleEng: {
+      type: String,
+      required: true,
+    },
+    titleUa: {
+      type: String,
+      required: true,
+    },
+    price: {
+      type: Number,
+      required: true,
+    },
     category: {
       type: String,
       required: true,
@@ -18,6 +27,10 @@ const desertSchema = new Schema(
     favorite: {
       type: Boolean,
       default: false,
+    },
+    imageURL: {
+      type: String,
+      required: true,
     },
   },
   { versionKey: false, timestamps: true }
