@@ -34,7 +34,7 @@ router.post(
   "/admin",
   authenticate,
   validateBody(schemas.addSchema),
-  upload.single("image"),
+  upload.single("imageURL"),
   ctrl.addDesert
 );
 
@@ -48,6 +48,11 @@ router.put(
 
 router.delete("/admin/:id", authenticate, isValidId, ctrl.deleteDesert);
 
-router.patch("/admin/:id", authenticate, ctrl.updateImg);
+router.patch(
+  "/admin/:id",
+  authenticate,
+  upload.single("imageURL"),
+  ctrl.updateImg
+);
 
 module.exports = router;

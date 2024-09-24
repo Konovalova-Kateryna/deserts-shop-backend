@@ -30,7 +30,7 @@ const desertSchema = new Schema(
     },
     imageURL: {
       type: String,
-      required: true,
+      required: false,
     },
   },
   { versionKey: false, timestamps: true }
@@ -39,12 +39,10 @@ const desertSchema = new Schema(
 desertSchema.post("save", handleMongooseError);
 
 const addSchema = Joi.object({
-  titleEng: Joi.string().required(),
-  titleUa: Joi.string().required(),
-  price: Joi.number().required(),
-  category: Joi.string()
-    .valid(...categoryList)
-    .required(),
+  titleEng: Joi.string(),
+  titleUa: Joi.string(),
+  price: Joi.number(),
+  category: Joi.string().valid(...categoryList),
   favorite: Joi.boolean(),
 });
 

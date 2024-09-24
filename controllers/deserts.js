@@ -29,28 +29,17 @@ const getById = async (req, res) => {
 };
 
 const addDesert = async (req, res) => {
-  console.log(req.file);
-  console.log(req.body);
   const { path: tempUpload, originalname } = req.file;
   const resultUpload = path.join(imgDir, originalname);
-
   await fs.rename(tempUpload, resultUpload);
-  const imgURL = path.join("images", originalname);
-
-  const result = await Desert.create({ ...req.body, imgURL });
-  res.status(201).json(result);
+  const imageURL = path.join("deserts", originalname);
+  console.log(imageURL);
+  const newDesert = await Desert.create({
+    ...req.body,
+    imageURL,
+  });
+  res.status(201).json(newDesert);
 };
-
-// const addImg = async (req, res) => {
-
-// const { path: tempUpload, originalname } = req.file;
-// const resultUpload = path.join(imgDir, originalname);
-// await fs.rename(tempUpload, resultUpload);
-// const imgURL = path.join("images", originalname);
-
-//     res.json({ imgURL });
-
-// };
 
 const updateById = async (req, res) => {
   const { id } = req.params;
@@ -73,12 +62,13 @@ const deleteDesert = async (req, res) => {
 const updateImg = async (req, res) => {
   const { id } = req.params;
   const { path: tempUpload, originalname } = req.file;
+  console.log(req.file);
   const resultUpload = path.join(imgDir, originalname);
   await fs.rename(tempUpload, resultUpload);
-  const imgURL = path.join("images", originalname);
-  await Desert.findByIdAndUpdate(id, { imgURL });
+  const imageURL = path.join("deserts", originalname);
+  await Desert.findByIdAndUpdate(id, { imageURL });
 
-  res.json({ imgURL });
+  res.json({ imageURL });
 };
 
 module.exports = {
