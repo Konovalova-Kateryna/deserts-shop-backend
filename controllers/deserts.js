@@ -32,7 +32,7 @@ const addDesert = async (req, res) => {
   const { path: tempUpload, originalname } = req.file;
   const resultUpload = path.join(imgDir, originalname);
   await fs.rename(tempUpload, resultUpload);
-  const imageURL = path.join("deserts", originalname);
+  const imageURL = path.join(imgDir, originalname);
   console.log(imageURL);
   const newDesert = await Desert.create({
     ...req.body,
@@ -65,7 +65,7 @@ const updateImg = async (req, res) => {
   console.log(req.file);
   const resultUpload = path.join(imgDir, originalname);
   await fs.rename(tempUpload, resultUpload);
-  const imageURL = path.join("deserts", originalname);
+  const imageURL = path.join(imgDir, originalname);
   await Desert.findByIdAndUpdate(id, { imageURL });
 
   res.json({ imageURL });
