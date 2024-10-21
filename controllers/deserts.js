@@ -63,9 +63,9 @@ const updateImg = async (req, res) => {
   const { id } = req.params;
   const { path: tempUpload, originalname } = req.file;
   console.log(req.file);
-  const resultUpload = path.join(imgDir, originalname);
+  const resultUpload = path.join("/deserts", originalname);
   await fs.rename(tempUpload, resultUpload);
-  const imageURL = path.join(imgDir, originalname);
+  const imageURL = path.join("/deserts", originalname);
   await Desert.findByIdAndUpdate(id, { imageURL });
 
   res.json({ imageURL });
