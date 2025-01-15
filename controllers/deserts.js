@@ -29,15 +29,23 @@ const getById = async (req, res) => {
 };
 
 const addDesert = async (req, res) => {
-  const { path: tempUpload, originalname } = req.file;
-  const resultUpload = path.join("/deserts", originalname);
-  await fs.rename(tempUpload, resultUpload);
-  const imageURL = path.join("/deserts", originalname);
-  console.log(imageURL);
+  let imageURL = null;
+
+  if (req.file) {
+    const { path: tempUpload, originalname } = req.file;
+    const resultUpload = path.join(imgDir, originalname);
+
+    await fs.rename(tempUpload, resultUpload);
+
+    imageURL = `/public/deserts/${originalname}`;
+    console.log(imageURL);  
+  }
+
   const newDesert = await Desert.create({
     ...req.body,
-    imageURL,
+    ...(imageURL&&{ imageURL }),
   });
+
   res.status(201).json(newDesert);
 };
 
@@ -61,14 +69,28 @@ const deleteDesert = async (req, res) => {
 
 const updateImg = async (req, res) => {
   const { id } = req.params;
-  const { path: tempUpload, originalname } = req.file;
-  console.log(req.file);
-  const resultUpload = path.join("/deserts", originalname);
-  await fs.rename(tempUpload, resultUpload);
-  const imageURL = path.join("/deserts", originalname);
-  await Desert.findByIdAndUpdate(id, { imageURL });
 
-  res.json({ imageURL });
+  const desert = await Desert.findById(id);
+  if (!desert) {
+    throw HttpError(404, "Desert not found");
+  }
+
+  if(req.file){
+    const { path: tempUpload, originalname } = req.file;
+    const resultUpload = path.join(imgDir, originalname);
+
+    await fs.rename(tempUpload, resultUpload);
+
+    if(desert.imageURL){
+      const oldImagePath=path.join(__dirname, "../", "public", desert.imageURL);
+      await fs.unlink(oldImagePath).catch(console.log);
+  }
+
+  desert.imageURL = `/public/deserts/${originalname}`;
+}  
+
+  await desert.save();
+  res.status(200).json(desert);  
 };
 
 module.exports = {

@@ -19,7 +19,7 @@ const desertSchema = new Schema(
       type: Number,
       required: true,
     },
-    desctiption: {
+    description: {
       type: String,
       reguired: true,
     },
@@ -49,7 +49,7 @@ desertSchema.post("save", handleMongooseError);
 const addSchema = Joi.object({
   titleEng: Joi.string(),
   titleUa: Joi.string(),
-  desctiption: Joi.string(),
+  description: Joi.string(),
   price: Joi.number(),
   category: Joi.string().valid(...categoryList),
   favorite: Joi.boolean(),
