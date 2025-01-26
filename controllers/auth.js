@@ -35,7 +35,9 @@ const register = async (req, res) => {
 
 const login = async (req, res) => {
   const { email, password } = req.body;
+  
   const user = await User.findOne({ email });
+
   if (!user) {
     throw HttpError(401, "Email or password invalid");
   }
@@ -46,12 +48,17 @@ const login = async (req, res) => {
 
   const payload = {
     id: user._id,
+    name:user.name,
+    email:user.email,
+    
   };
 
   const token = jwt.sign(payload, SECRET_KEY, { expiresIn: "23h" });
   await User.findByIdAndUpdate(user._id, { token });
 
-  res.json({ token });
+  console.log(payload)
+
+  res.json({...payload, token});
 };
 
 const getCurrent = async (req, res) => {
