@@ -33,6 +33,21 @@ const register = async (req, res) => {
   });
 };
 
+const getUserByEmail = async(req,res)=> {
+  const { email, password } = req.body;
+  const user = await User.findOne({ email });
+  if (!user) {
+    throw HttpError(404,"Email not found ")
+  }
+  res.status(200).json({
+    id: user._id,
+    name: user.name,
+    email: user.email,
+    password: user.password,
+    image:user.avatarURL
+  })
+}
+
 const login = async (req, res) => {
   const { email, password } = req.body;
   
@@ -53,7 +68,7 @@ const login = async (req, res) => {
     
   };
 
-  const token = jwt.sign(payload, SECRET_KEY, { expiresIn: "23h" });
+  const token = jwt.sign(payload.id, SECRET_KEY, { expiresIn: "23h" });
   await User.findByIdAndUpdate(user._id, { token });
 
   console.log(payload)
@@ -91,6 +106,7 @@ const updateAvatar = async (req, res) => {
 module.exports = {
   register: ctrlWrapper(register),
   login: ctrlWrapper(login),
+getUserByEmail:ctrlWrapper(getUserByEmail),
   getCurrent: ctrlWrapper(getCurrent),
   logout: ctrlWrapper(logout),
   updateAvatar: ctrlWrapper(updateAvatar),
