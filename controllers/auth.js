@@ -35,9 +35,10 @@ const register = async (req, res) => {
 
 const getUserByEmail = async(req,res)=> {
   const { email, password } = req.body;
+  console.log(req.body);
   const user = await User.findOne({ email });
   if (!user) {
-    throw HttpError(404,"Email not found ")
+    throw HttpError(401, "Email or password invalid");
   }
   res.status(200).json({
     id: user._id,
@@ -50,30 +51,38 @@ const getUserByEmail = async(req,res)=> {
 
 const login = async (req, res) => {
   const { email, password } = req.body;
-  
+  console.log(req.body);
   const user = await User.findOne({ email });
 
   if (!user) {
     throw HttpError(401, "Email or password invalid");
   }
-  const passwordCompare = await bcrypt.compare(password, user.password);
+
+  const passwordCompare = await bcrypt.compare(password, user.password); 
+
   if (!passwordCompare) {
     throw HttpError(401, "Email or password invalid");
   }
 
   const payload = {
-    id: user._id,
-    name:user.name,
-    email:user.email,
-    
+    id: user._id   
   };
 
-  const token = jwt.sign(payload.id, SECRET_KEY, { expiresIn: "23h" });
+  const token = jwt.sign(payload, SECRET_KEY, { expiresIn: "23h" });
   await User.findByIdAndUpdate(user._id, { token });
 
-  console.log(payload)
+  res.status(200).json({
+    token: token,
+    user:{
+    id: user._id,
+    name: user.name,
+    email: user.email,
+    password: user.password,
+    image: user.avatarURL,
+  }
+  })
 
-  res.json({...payload, token});
+  // res.json({...payload, token});
 };
 
 const getCurrent = async (req, res) => {
